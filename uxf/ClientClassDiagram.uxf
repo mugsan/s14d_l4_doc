@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>120</x>
+      <y>260</y>
+      <w>180</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>Listener: Thread
+--
++ void run</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>120</x>
+      <y>190</y>
+      <w>180</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>Transmitter: Thread
+--
++ void run</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>120</x>
+      <y>360</y>
+      <w>240</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>ThreadManager
+&lt;ListenerDelegate&gt;
+--
++ didReceiveMessage: char*
+--
+- (Listener*)listener
+- (Transmitter*)transmitter</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
