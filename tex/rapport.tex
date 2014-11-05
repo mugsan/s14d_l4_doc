@@ -1,0 +1,109 @@
+
+
+\documentclass[10pt, titlepage, oneside, a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[swedish]{babel}
+\usepackage{amssymb, graphicx, fancyhdr}
+\usepackage{hyperref}
+\addtolength{\textheight}{20mm}
+\addtolength{\voffset}{-5mm}
+\renewcommand{\sectionmark}[1]{\markleft{#1}}
+
+\newcommand{\Section}[1]{\section{#1}\vspace{-8pt}}
+\newcommand{\Subsection}[1]{\vspace{-4pt}\subsection{#1}\vspace{-8pt}}
+\newcommand{\Subsubsection}[1]{\vspace{-4pt}\subsubsection{#1}\vspace{-8pt}}
+
+
+\def\typeofdoc{Laborationsrapport}
+\def\course{S0014D}
+\def\pretitle{Laboration 5}
+\def\title{Bombomanu!}
+\def\name{Magnus Björk}
+\def\username{magbjr-3}
+\def\email{\username{}@student.ltu.se}
+\def\graders{Patrik Holmlund}
+\def\university{Luleå Tekniska Universitet}
+
+
+\def\fullpath{\raisebox{1pt}{$\scriptstyle \sim$}\username/\path}
+
+
+\begin{document}
+	\begin{titlepage}
+		\thispagestyle{empty}
+		\begin{large}
+			\begin{tabular}{@{}p{\textwidth}@{}}
+				\textbf{\university \hfill \today} \\
+				\textbf{\typeofdoc} \\
+			\end{tabular}
+		\end{large}
+		\vspace{10mm}
+		\begin{center}
+			\LARGE{\pretitle} \\
+			\huge{\textbf{\course}}\\
+			\vspace{10mm}
+			\LARGE{\title} \\
+			\vspace{15mm}
+			\begin{large}
+				\begin{tabular}{ll}
+					\textbf{Namn} & \name \\
+					\textbf{E-mail} & \texttt{\email} \\
+				\end{tabular}
+			\end{large}
+			\vfill
+			\large{\textbf{Handledare}}\\
+			\mbox{\large{\graders}}
+		\end{center}
+	\end{titlepage}
+
+
+	\lfoot{\footnotesize{\name, \email}}
+	\rfoot{\footnotesize{\today}}
+	\lhead{\sc\footnotesize\title}
+	\rhead{\nouppercase{\sc\footnotesize\leftmark}}
+	\pagestyle{fancy}
+	\renewcommand{\headrulewidth}{0.2pt}
+	\renewcommand{\footrulewidth}{0.2pt}
+
+	\pagenumbering{roman}
+    \tableofcontents
+	
+	\newpage
+
+	\pagenumbering{arabic}
+
+	\setlength{\parindent}{0pt}
+	\setlength{\parskip}{10pt}
+
+	\section{Problemspecifikation}
+		Att programmera en server samt klient som tillsammans utgör ett spel där spelare spelar spel mot varandra för att vinna.
+    \section{Användarhandledning}
+    	\subsection{Klient}
+    		När applikationen startar möts användaren av en lista över servrar. I listans högra hörn så finns en knapp som leder till en vy där man kan lägga till fler servrar till listan. För att lägga till en server till listan måste man veta IP-adress till en server samt vilken port server lyssnar på (standardport är: 12345). För att ansluta till en server klickar man på en cell i listan.\\\\När en spelare anländer till spelplanen har denne två val:
+    		\begin{itemize}
+    			\item Flytta gubben genom att klicka på en position på kartan. Gubben kolliderar med andra spelare, bomber samt pelare på spelplanen.
+    			\item Lägg en bomb på gubbens position genom att klicka på gubben. Efter 5 sekunder så kommer bomben att explodera. Lägger man bomber inom räckhåll för varandra så kommer den som smäller först att även detonera de bomber inom räckhåll, oavsett deras interna timer. Om en spelare befinner sig inom räckhåll för explosionen så kommer denne att förlora.
+    		\end{itemize}
+    		
+    		Spelet pågår tills dess att det bara finns en spelare kvar på planen.
+    		
+    	\subsection{Server}
+    		En server krävs för att man skall kunna spela överhuvudtaget. Vill man ändra port från standard värde ('12345') kan man hitta detta värde i klassen ServerSocket. Trafiken är krypterad, vill man av någon anledning slå av detta så kan man göra det i klassen Socket. Där kan man även sätta vilken nyckel spelet skall använda.
+    		
+    	\newpage
+    	
+    \section{Algoritmbeskrivning}
+    	\subsection{Applikationsprotokoll}
+    	\subsection{Path-finder}
+    	\subsection{Kryptering}
+    	
+    \section{Systembeskrivning}
+    	\subsection{Klient}
+    	\subsection{Server}
+    		
+    \section{Diskussion}
+    	\subsection{Lösningens begränsningar}
+    		\subsubsection{Klient}
+    		\subsubsection{Server}
+\end{document}
