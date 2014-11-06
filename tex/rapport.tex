@@ -80,6 +80,19 @@
 	\section{Problemspecifikation}
 		Att programmera en server samt klient som tillsammans utgör ett spel där spelare kämpar mot varandra i en kamp på liv och död.
 		
+	\begin{enumerate}
+		\item En spelare måste veta serverns URL för att kunna ansluta. När en spelare ansluter så kommer denne direkt in i ett pågående spel. Anslutna klienter är begränsade till 4-5st.
+		\item Spelplanen är helt blank och innehåller endast spelare. När en spelare 'tappar' på spelplanen så rör sig markören mot denna position, en annan gesture släpper en bomb på befintlig position. Står en spelare inom räckhåll för explosionen så förlorar denne. Spelet fortsätter tills dess att en spelare vunnit.
+		\item Spelplanen har hinder som spelare kan ta skydd bakom. Nu behövs även en algoritm för att markörsen skall flytta sig till den position spelaren 'tappade på'.
+		\item Spelplanen har sprängbara objekt som öppnar upp spelplanen för spelarna. Spelarna måste spränga sig fram till varandra.
+		\item Sprängbara objekt har en chans att förvandlas till en 'Power-up' som spelarna kan ta för att förbättra deras bombers egenskaper(Större explosioner, fler bomber).
+		\item Animerad 2d grafik.
+		\item Ljudeffekter
+		\item Musik
+		\item Stöd för fler spelare. Efter att (4-5) spelare har anslutit till servern så startas en ny spelplan som nya klienter kan ansluta sig till.
+		\item Global toplista över alla som någonsin har spelat spelet.
+	
+	\end{enumerate}
 		
 		
     \section{Användarhandledning}
