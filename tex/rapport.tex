@@ -6,6 +6,7 @@
 \usepackage[swedish]{babel}
 \usepackage{amssymb, graphicx, fancyhdr}
 \usepackage{hyperref}
+\usepackage{tikz}
 \addtolength{\textheight}{20mm}
 \addtolength{\voffset}{-5mm}
 \renewcommand{\sectionmark}[1]{\markleft{#1}}
@@ -78,21 +79,13 @@
 	
 
 	\section{Problemspecifikation}
-		Att programmera en server samt klient som tillsammans utgör ett spel där spelare kämpar mot varandra i en kamp på liv och död.
-		
-	\begin{enumerate}
-		\item En spelare måste veta serverns URL för att kunna ansluta. När en spelare ansluter så kommer denne direkt in i ett pågående spel. Anslutna klienter är begränsade till 4-5st.
-		\item Spelplanen är helt blank och innehåller endast spelare. När en spelare 'tappar' på spelplanen så rör sig markören mot denna position, en annan gesture släpper en bomb på befintlig position. Står en spelare inom räckhåll för explosionen så förlorar denne. Spelet fortsätter tills dess att en spelare vunnit.
-		\item Spelplanen har hinder som spelare kan ta skydd bakom. Nu behövs även en algoritm för att markörsen skall flytta sig till den position spelaren 'tappade på'.
-		\item Spelplanen har sprängbara objekt som öppnar upp spelplanen för spelarna. Spelarna måste spränga sig fram till varandra.
-		\item Sprängbara objekt har en chans att förvandlas till en 'Power-up' som spelarna kan ta för att förbättra deras bombers egenskaper(Större explosioner, fler bomber).
-		\item Animerad 2d grafik.
-		\item Ljudeffekter
-		\item Musik
-		\item Stöd för fler spelare. Efter att (4-5) spelare har anslutit till servern så startas en ny spelplan som nya klienter kan ansluta sig till.
-		\item Global toplista över alla som någonsin har spelat spelet.
-	
-	\end{enumerate}
+		Att programmera en server samt klient som tillsammans utgör ett spel där spelare kämpar mot varandra i en kamp på liv och död. Spelet skall vara en bomberman-klon vilket innebär:
+		\begin{itemize}
+			\item Spelare som deltar spelar mot varandra.
+			\item Spelare kan släppa ner bomber på spelplanen som exploderar efter 5 sekunder.
+			\item Om en spelare blir träffad av följande explosion så förlorar denne.
+			\item Siste spelare på planen vinner.
+		\end{itemize}
 		
 		
     \section{Användarhandledning}
@@ -100,7 +93,7 @@
     		När applikationen startar möts användaren av en lista över servrar. I listans högra hörn så finns en knapp som leder till en vy där man kan lägga till fler servrar till listan. För att lägga till en server till listan måste man veta IP-adress till en server samt vilken port server lyssnar på (standardport är: 12345). För att ansluta till en server klickar man på en cell i listan.\\\\När en spelare anländer till spelplanen har denne två val:
     		\begin{itemize}
     			\item Flytta gubben genom att klicka på en position på kartan. Gubben kolliderar med andra spelare, bomber samt pelare på spelplanen.
-    			\item Lägg en bomb på gubbens position genom att klicka på gubben. Efter 5 sekunder så kommer bomben att explodera. Lägger man bomber inom räckhåll för varandra så kommer den som smäller först att även detonera de bomber inom räckhåll, oavsett deras interna timer. Om en spelare befinner sig inom räckhåll för explosionen så kommer denne att förlora.
+    			\item Lägg en bomb på gubbens position genom att klicka på gubben. Efter 5 sekunder så kommer bomben att explodera. Lägger man bomber inom räckhåll för varandra så kommer den som smäller först att även detonera de bomber som finns inom räckhåll, oavsett deras interna timer. Om en spelare befinner sig inom räckhåll för explosionen så kommer denne att förlora.
     		\end{itemize}
     		
     		Spelet pågår tills dess att det bara finns en spelare kvar på planen.
@@ -112,14 +105,58 @@
     	
     \section{Algoritmbeskrivning}
     	\subsection{Applikationsprotokoll}
+    	\begin{tabular}{l | l | l |}
+    
+    	Meddelande & Typ & Uppgift\\ 
+    	\hline 
+    	Destination & Move & Sätter slutdestination på spelaren. \\ 
+    	Advance & Move & Ber servern att avancera spelarens position.\\
+    	\end{tabular} 
     	\subsection{Path-finder}
+    	Servern har en metod för att förflytta spelare, denna metod utför en algoritm för att beräkna vilken position som spelaren borde förflytta sig till. Slutdestination sätts när servertråd får meddelandet Event->Destination av klient. Därefter kommer klient att skicka Event->Advance tills dess att den får ett Change->PlayerStop från servern.
+    	
+    		\begin{enumerate}
+    			\item Jämför spelarens position med slutdestination. 
+    			\item Är markören på slutdestination? Returnera falskt.
+    			\item Skapa en array av punkter. Punkterna representerar de positioner spelaren kan flytta sig i: upp, vänster, ner och höger.
+    			\item Byt plats på ner<->upp och höger<->vänster beroende på hur spelarens position förhåller sig till slutdestination.
+    			\item Jämför nu sträckorna i y och x-led. Prioritera den längre sträckan över den kortare. 
+    			\item Gå nu igenom listan med positioner och kolla om position är giltig för förflyttning (position innehaver ej bomb eller annan spelare och är inte markerad som besökt). Om en position är giltig markera då nuvarande position som besökt och flytta markören. Returnera sant.
+    			\item Är ingen position giltig för förflyttning? Returnera falskt.
+    			 
+    		\end{enumerate}
+    	Om denna metod returnerar falskt kommer servern att skicka ett Change->PlayerStop meddelande som säger till klienten att sluta skicka Event->Advance.
     	\subsection{Kryptering}
     	
     \section{Systembeskrivning}
     	\subsection{Klient}
+    		\subsubsection{ViewControllers}
+    		
     	\subsection{Server}
     		
+   
+   	
+
+    \newpage
     \section{Diskussion}
+    	\subsection{Resultat}
+    	
+    	\begin{enumerate}
+			\item En spelare måste veta serverns URL för att kunna ansluta. När en spelare ansluter så kommer denne direkt in i ett pågående spel. Anslutna klienter är begränsade till 4-5st.i\\\textit{\textbf{Implementation:} Antalet anslutna klienter är ej begränsat, ansluter en klient så hamnar denne i ett pågående spel.}
+			
+			\item Spelplanen är helt blank och innehåller endast spelare. När en spelare 'tappar' på spelplanen så rör sig markören mot denna position, en annan gesture släpper en bomb på befintlig position. Står en spelare inom räckhåll för explosionen så förlorar denne. Spelet fortsätter tills dess att en spelare vunnit.\\\textit{\textbf{Implementation:} Touchevent på spelplanen flyttar spelaren, touchevent på spelaren släpper ned en bomb på spelarens position. Träffas en spelare av följande explosion så är denne ute ur spelet.}
+			
+			
+			\item Spelplanen har hinder som spelare kan ta skydd bakom. Nu behövs även en algoritm för att markören skall flytta sig till den position spelaren 'tappade på'.\\\textit{\textbf{Implementation:} På spelplanen finns som tidigare nämnt ett antal pelare som spelaren kan ta skydd bakom. En enkel algoritm är implementerad för att förenkla förflyttningar av spelaren.}
+			\\\\\textit{\textbf{Ej implementerade punkter:}}
+			\item Spelplanen har sprängbara objekt som öppnar upp spelplanen för spelarna. Spelarna måste spränga sig fram till varandra.\\\textit{\textbf{Anledning:} Implementationen av hur bomberna exploderar samt sätts ut, medförde att min planerade implementation av blocken inte skulle fungera. Med tanke på tidsbrist tog jag beslutet att utesluta denna punkt och därmed även punkt 5.}
+			\item Sprängbara objekt har en chans att förvandlas till en 'Power-up' som spelarna kan ta för att förbättra deras bombers egenskaper(Större explosioner, fler bomber).
+			\item Animerad 2d grafik.\textit{\textbf{Anledning:}Tidsbrist.}
+			\item Ljudeffekter\textit{\textbf{Anledning:}Tidsbrist.}
+			\item Musik\textit{\textbf{Anledning:}Tidsbrist.}
+			\item Stöd för fler spelare. Efter att (4-5) spelare har anslutit till servern så startas en ny spelplan som nya klienter kan ansluta sig till.\\\textit{\textbf{Anledning:} Applikationen körs på iOS8 och då jag endast har tillgång till en enhet (+simulator) så uteslöt jag denna punkt.}
+			\item Global toplista över alla som någonsin har spelat spelet.\\\textit{\textbf{Anledning:}Tidsbrist.}
+		\end{enumerate}
     	\subsection{Lösningens begränsningar}
     		\subsubsection{Klient}
     		\subsubsection{Server}
