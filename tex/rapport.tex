@@ -7,6 +7,7 @@
 \usepackage{amssymb, graphicx, fancyhdr}
 \usepackage{hyperref}
 \usepackage{tikz}
+\usepackage{listings}
 \addtolength{\textheight}{20mm}
 \addtolength{\voffset}{-5mm}
 \renewcommand{\sectionmark}[1]{\markleft{#1}}
@@ -105,13 +106,92 @@
     	
     \section{Algoritmbeskrivning}
     	\subsection{Applikationsprotokoll}
-    	\begin{tabular}{l | l | l |}
-    
-    	Meddelande & Typ & Uppgift\\ 
+    	\subsubsection{Meddelanden}
+    		Kommunikation mellan server och klient sker via ett antal meddelanden. Dessa meddelanden är structs som man sedan typecastar till char* när man skickar dem. Första post i varje meddelande är en struct MsgHead, detta gör det möjligt att behandla alla inkommande meddelanden på liknande vis genom att typecasta inkommande meddelanden till denna struct. När man sedan vet vilken typ meddelandet har kan man typecasta till korrekt meddelande typ.
+    		
+    	\begin{center}
+    	\begin{tabular}{| l | l | l |}
+    	\hline
+    	\multicolumn{3}{|c|}{MsgHead}\\
+    	\hline
+    	Attribut & Typ & Uppgift\\ 
+    	\hline
+    	id & u int & Identifiering av klient. \\
+    	type & enum & Avgöra hur man skall behandla meddelandet. \\
+    	length & u int & Antal bytes i meddelandet. \\
+    	seq\_no & u int & Ordning av meddelanden. \\
     	\hline 
-    	Destination & Move & Sätter slutdestination på spelaren. \\ 
-    	Advance & Move & Ber servern att avancera spelarens position.\\
     	\end{tabular} 
+    	\end{center}
+    	
+    	Exempel på meddelande typer:
+    	
+    	\begin{center}
+    	\begin{tabular}{| l | l | l |}
+    	\hline
+    	\multicolumn{3}{|c|}{EventMsg}\\
+    	\hline
+    	Attribut & Typ & Uppgift\\ 
+    	\hline
+    	head & MsgHead & Data angående meddelande.\\
+    	type & enum & Vilken event-typ meddelande behandlar.\\
+    	\hline 
+    	\end{tabular} 
+    	\end{center}
+
+    	\begin{center}
+    	\begin{tabular}{| l | l | l |}
+    	\hline
+    	\multicolumn{3}{|c|}{BombuMsg}\\
+    	\hline
+    	Attribut & Typ & Uppgift\\ 
+    	\hline
+    	event & EventMsg & Data angående meddelande.\\
+    	pos & Coordinate & Position av bomb.\\
+    	\hline 
+    	\end{tabular} 
+    	\end{center}
+    	
+    	\newpage
+    	\subsubsection{Handshake}
+    	Antag att klienten och servern har slutit kontakt. Nedan beskrivs hur en klient och server kommunicerar med varandra.
+    	
+    	\begin{center}
+    		\includegraphics[scale=.5]{./png/JoinProtocol.png}
+    	\end{center}
+    	\begin{itemize}
+    		\item\textbf{Connecting}
+    		\begin{enumerate}
+    			\item Client skickar Join meddelande med id == 0.
+    			\item Server svarar med ett Join meddelande men har angivit ett id nummer.(id nummer är egentligen 'socket file descriptor', detta är unikt för varje ansluten klient.) Alla klientens kommande meddelanden till servern kommer att ha detta id i MsgHead.
+    			\item Servern skapar nu ett NewPlayer meddelande för varje spelare som befinner sig på servern och skickar det till den nya klienten.
+    			\item Servern skickar därefter den nya klienten i ett NewPlayer meddelande som går ut till alla anslutna klienter.
+    		\end{enumerate}
+    		
+    		\item\textbf{Connected}
+    		\begin{enumerate}
+    			\item Klienten kan nu skicka Event meddelanden till servern.
+    			\item Servern delger dessa meddelanden till alla klienter om de godkänns av modellen.(Om kollision sker under en förflyttning skulle Event exempelvis inte godkännas.)
+    		\end{enumerate}
+    		\item\textbf{Disconnecting}
+    		\begin{enumerate}
+    			\item Klient skickar ett Leave meddelande till servern.
+    			\item Server delger detta till alla klienter så att dessa kan ta bort klienten från sina views.
+    		\end{enumerate}
+    	\end{itemize}
+    	
+    	\subsubsection{Förflyttning}
+    	\begin{center}
+    		\includegraphics[scale=.5]{./png/MoveProtocol.png}
+    	\end{center}
+    	
+    	\begin{enumerate}
+    		\item När användaren trycker på skärmen och triggar en touchevent så skickas två meddelanden till servern: Event->Destination med önskad position och Event->Advance för att be om förflyttning.
+    		\item När servern tar emot den nya önskade positionen registreras detta så att den kan användas i förflyttningsalgoritmen. 
+    		\item När Event->Advance tas emot av servern så körs förflyttningsalgoritmen, returnerar denna sant så har spelaren förflyttat ett steg i modellen och ett Change->NewPlayerPos meddelande skickas till alla klienter(multicast). Om algoritmen returnerar falskt så betyder det att spelaren har stannat så ett Change->PlayerStop skickas tillbaka till klienten (unicast).
+    	\end{enumerate}
+    	
+    	\newpage
     	\subsection{Path-finder}
     	Servern har en metod för att förflytta spelare, denna metod utför en algoritm för att beräkna vilken position som spelaren borde förflytta sig till. Slutdestination sätts när servertråd får meddelandet Event->Destination av klient. Därefter kommer klient att skicka Event->Advance tills dess att den får ett Change->PlayerStop från servern.
     	
@@ -126,7 +206,35 @@
     			 
     		\end{enumerate}
     	Om denna metod returnerar falskt kommer servern att skicka ett Change->PlayerStop meddelande som säger till klienten att sluta skicka Event->Advance.
+    	
+    	\newpage
     	\subsection{Kryptering}
+    	Kryptering av trafik sker med RC4 kryptering. RC4 är ett ström chiffer som använder sig av symmetriska nycklar och består av två algoritmer:
+    	\begin{itemize}
+    		\item\textbf{KSA - Key-Scheduling Algorithm}
+    		
+    		\begin{lstlisting}
+print "Hello World";
+	    		for i from 0 to 255
+	    		S[i] := i
+				endfor
+				j := 0
+				for i from 0 to 255
+	    		j := (j + S[i] + key[i mod keylength]) mod 256
+	    		swap values of S[i] and S[j]
+				endfor
+				
+    		\end{lstlisting}
+    		
+    		\begin{enumerate}
+    			\item Börja med att skapa en array av chars med värden 0 till 255.
+    			\item Nu anger man en nyckel och med den så kastar man om värdena i den array man skapade i punkt 1.
+    		\end{enumerate}
+    		\item\textbf{PRGA - Pseudo-Random Generation Algorithm}
+    		\begin{enumerate}
+    			\item hey
+    		\end{enumerate}
+    	\end{itemize}
     	
     \section{Systembeskrivning}
     	\subsection{Klient}
