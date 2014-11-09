@@ -209,7 +209,7 @@
     	
     	\newpage
     	\subsection{Kryptering}
-    	Kryptering av trafik sker med RC4 kryptering. RC4 är ett ström chiffer som använder sig av symmetriska nycklar och består av två algoritmer:
+    	Kryptering av trafik sker med RC4 kryptering. RC4 är ett strömchiffer som använder sig av symmetriska nycklar och består av två algoritmer:
     	\begin{itemize}
     		\item\textbf{KSA - Key-Scheduling Algorithm}\\Genererar en array [S] av chars beroende på en given nyckel.
 \begin{lstlisting}[frame = single]
@@ -223,7 +223,7 @@ for i from 0 to 255
 endfor
 \end{lstlisting}
     		
-\item\textbf{PRGA - Pseudo-Random Generation Algorithm}\\Genererar 1 char beroende av array [S] genererad med KSA. Efter att en char har genererats byter man plats på två index (i,j) i array [S] för att ytterligare slumpa arrayen.
+\item\textbf{PRGA - Pseudo-Random Generation Algorithm}\\Genererar 1 char beroende av array [S] genererad med KSA. Efter att en char har genererats byter man plats på två index (i, j) i array [S] för att ytterligare slumpa arrayen.
 
 \begin{lstlisting}[frame = single]
 i := (i + 1) mod 256
@@ -238,11 +238,11 @@ output K
     			\item Man har nu en array av chars som man kan använda i PRGA för att kryptera bytes.
     			\item Har man en byte man vill kryptera så kör man helt enkelt XOR på den byten samt den byte genererad av PRGA. När man sen vill dekryptera så kör man XOR igen.
     			\begin{lstlisting}[frame = single]
-   Krypterad byte = Okrypterad byte ^ K;
-Dekrypterad bytee =  Krypterad byte ^ K;
+  Krypterad byte = Okrypterad byte ^ K;
+Dekrypterad byte =  Krypterad byte ^ K;
     			\end{lstlisting}
     		\end{enumerate}
-    		OBS: För att man skall kunna köra asynkron trafik måste man ha separata PRGA index för in och ut trafik.
+    		OBS: För att man skall kunna köra asynkron trafik måste man ha separata PRGA index (i, j) för in och ut trafik.
 
 \end{itemize}
     	
@@ -278,7 +278,11 @@ Dekrypterad bytee =  Krypterad byte ^ K;
     			\item\textbf{Thread}
     			\item\textbf{BombThread}
     		\end{itemize}
-    		\subsubsection{Server: Socket}
+    		\subsubsection{Server: Sockets}
+    		\begin{itemize}
+    			\item\textbf{ServerSocket}
+    			\item\textbf{Socket}
+    		\end{itemize}
     		
    
    	
