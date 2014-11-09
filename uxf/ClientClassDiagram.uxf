@@ -2,46 +2,295 @@
 <diagram program="umlet" version="13.0">
   <zoom_level>10</zoom_level>
   <element>
-    <id>UMLClass</id>
+    <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>120</x>
-      <y>260</y>
-      <w>180</w>
-      <h>50</h>
+      <x>200</x>
+      <y>140</y>
+      <w>390</w>
+      <h>350</h>
     </coordinates>
-    <panel_attributes>Listener: Thread
+    <panel_attributes>GameScene
+&lt;ThreadManagerDelegate&gt;
+
 --
-+ void run</panel_attributes>
++disconnect(void)
+--
++(NSMutableDictionary)views
++(ThreadManager*)manager
++(CGPoint)input
++(CGFloat)scale
++(SKSpriteNode*)level
++(NSString*)explosionPath
++(BOOL)playing
+--
+Delegate methods
+--
++manager:(ThreadManager*)playerJoin:(int)
++manager:(ThreadManager*)playerLeft:(int)
++manager:(ThreadManager*)playerDied:(int)
++manager:(ThreadManager*)playerWon:(int)
++manager:(ThreadManager*)oponentJoin:(int)
++manager:(ThreadManager*)oponentDied:(int)
++manager:(ThreadManager*)player:(int)movedTo:(CGPoint)
++manager:(ThreadManager*)bombAt:(CGPoint)withId:(int)
+
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>UMLClass</id>
+    <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>120</x>
-      <y>190</y>
-      <w>180</w>
-      <h>50</h>
+      <x>0</x>
+      <y>140</y>
+      <w>120</w>
+      <h>30</h>
     </coordinates>
-    <panel_attributes>Transmitter: Thread
---
-+ void run</panel_attributes>
+    <panel_attributes>GamePlayer
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>UMLClass</id>
+    <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>120</x>
-      <y>360</y>
-      <w>240</w>
-      <h>130</h>
+      <x>0</x>
+      <y>200</y>
+      <w>120</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>GameFinished</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>90</x>
+      <y>120</y>
+      <w>130</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+m1=0..n</panel_attributes>
+    <additional_attributes>30;30;110;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>90</x>
+      <y>180</y>
+      <w>130</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+m1=0..1
+m2=1</panel_attributes>
+    <additional_attributes>30;30;110;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>700</x>
+      <y>140</y>
+      <w>300</w>
+      <h>300</h>
     </coordinates>
     <panel_attributes>ThreadManager
 &lt;ListenerDelegate&gt;
 --
-+ didReceiveMessage: char*
++initWithUrl:(NSString)andPort:(NSString)
++setDestination:(CGPoint)
++advanceMovement:(CGPoint)
++setBomb:(CGPoint)
++start(void)
++stop(void)
 --
-- (Listener*)listener
-- (Transmitter*)transmitter</panel_attributes>
+-(Listener*)listener
+-(Transmitter*)transmitter
+-(MessageFactory*)factory
+-(int)id_no
+-(Socket*)socket
+-(BOOL)moving
+--
+Delegate methods
+--
++listener(Listener*)didReceiveMessage:(char*)
+</panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>560</x>
+      <y>130</y>
+      <w>160</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;140;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1290</x>
+      <y>140</y>
+      <w>140</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>/Thread/
+--
++start(void)
++stop(void)
++run(void)
+--
+-(BOOL)running</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1070</x>
+      <y>140</y>
+      <w>150</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>Listener
+--
++run(void)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1070</x>
+      <y>270</y>
+      <w>150</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>Transmitter
+--
++run(void)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1190</x>
+      <y>130</y>
+      <w>120</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>100;30;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1190</x>
+      <y>130</y>
+      <w>80</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>60;30;60;160;30;160</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>970</x>
+      <y>130</y>
+      <w>120</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;100;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1010</x>
+      <y>130</y>
+      <w>80</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>30;30;30;160;60;160</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1040</x>
+      <y>380</y>
+      <w>250</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>Socket
+--
++addMessageToBuffer:(char*)
++sendBuffer
++sendMessage(char*)withLength:(int)
++receiveToBuffer:(char*)ofLength:(int)
+--
+-(int)sockfd
+-(NSMutableData)buffer
+-(NSLock*)lock
+-(EncryptionEngine*)encryptionEngine</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>700</x>
+      <y>450</y>
+      <w>230</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>EncryptionEngine
+--
++(char*)encrypt(char*,int)
++(char*)decrypt(char*,int)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1110</x>
+      <y>200</y>
+      <w>180</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;70;30;30;160;30;160;180</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1110</x>
+      <y>160</y>
+      <w>50</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;30;70</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>970</x>
+      <y>200</y>
+      <w>190</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;170;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>900</x>
+      <y>440</y>
+      <w>160</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>140;30;30;30</additional_attributes>
   </element>
 </diagram>

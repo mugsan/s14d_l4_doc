@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>320</x>
+      <y>90</y>
+      <w>390</w>
+      <h>380</h>
+    </coordinates>
+    <panel_attributes>GameModel
+--
++(Coordinate)addPlayer(int id_no)
++(void)removePlayer(int id_no)
++(int)placeBomb(Coordinate pos, int id_no)
++(std::vector&lt;ExplosionMsg&gt;*)updateBombs(void)
++(std::vector&lt;PlayerDiedMsg&gt;*)updatePlayers(void)
++(std::vector&lt;Player&gt;*)getPlayers(void)
+
++(void)setDestination(int id_no, Coordinate pos)
++(bool)advancePlayer(int id_no)
++(bool)playerArrived(int id_no)
++(Coordinate)getPlayerPosition(int id_no)
+--
+-(int**)clean_array(void);
+-(bool)collision(int id_no, Coordinate pos)
+--
+-(pthread_mutex_lock)lock
+-(bool)gameRunning
+-(std::map&lt;int, Player&gt; players
+-(std::map&lt;int, BombuModel*&gt; bombs
+-(MessageFactory*)factory
+-(int**)player_array
+-(int**)bomb_array
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>160</x>
+      <y>150</y>
+      <w>100</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>BombuModel</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>160</x>
+      <y>90</y>
+      <w>100</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>Player</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>760</x>
+      <y>90</y>
+      <w>110</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Thread</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>770</x>
+      <y>230</y>
+      <w>110</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>BombuThread</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>760</x>
+      <y>690</y>
+      <w>100</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>ServerSocket</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>340</x>
+      <y>590</y>
+      <w>100</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>Socket</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

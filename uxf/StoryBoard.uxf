@@ -13,7 +13,7 @@
 /ServerListViewController/
 --
 Purpose: Lists availible 
-servers.
+server.
 Actions: Add a new server 
 or connect to a server.</panel_attributes>
     <additional_attributes/>

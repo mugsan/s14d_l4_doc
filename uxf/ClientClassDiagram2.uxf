@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>380</x>
+      <y>160</y>
+      <w>460</w>
+      <h>390</h>
+    </coordinates>
+    <panel_attributes>GameScene
+&lt;ThreadManagerDelegate&gt;
+--
+delegate methods
+--
++manager:(ThreadManager*)playerJoin:(int)
++manager:(ThreadManager*)playerLeft:(int)
++manager:(ThreadManager*)playerDied:(int)
++manager:(ThreadManager*)playerWon:(int)
++manager:(ThreadManager*)oponentJoin:(int)
++manager:(ThreadManager*)oponentDied:(int)
++manager:(ThreadManager*)player:(int)movedTo:(CGPoint)
++manager:(ThreadManager*)bombAt:(CGPoint)withId:(int)
+--
++initWithUrl:(NSString)andPort:(NSString)
++setDestination:(CGPoint)
++advanceMovement:(CGPoint)
++setBomb:(CGPoint)
++start(void)
++stop(void)
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>150</x>
+      <y>160</y>
+      <w>120</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>GamePlayer
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>150</x>
+      <y>220</y>
+      <w>120</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>GameFinished</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>240</x>
+      <y>140</y>
+      <w>160</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+m1=0..n</panel_attributes>
+    <additional_attributes>30;30;140;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>240</x>
+      <y>200</y>
+      <w>160</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+m1=0..1
+m2=1</panel_attributes>
+    <additional_attributes>30;30;140;30</additional_attributes>
+  </element>
+</diagram>

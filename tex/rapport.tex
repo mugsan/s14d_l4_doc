@@ -8,6 +8,7 @@
 \usepackage{hyperref}
 \usepackage{tikz}
 \usepackage{listings}
+\usepackage{amsmath}
 \addtolength{\textheight}{20mm}
 \addtolength{\voffset}{-5mm}
 \renewcommand{\sectionmark}[1]{\markleft{#1}}
@@ -263,6 +264,7 @@ Dekrypterad byte =  Krypterad byte ^ K;
     		\end{itemize}
     		
     		\newpage
+    		\includegraphics[scale=.25]{./png/ClientClassDiagram.png}
     		\subsubsection{GameScene <ThreadManagerDelegate>}
     		Klass vars uppgift är att kontrollera vyerna på spelplanen. Tar emot touchevents från spelaren och skickar dessa vidare till en instans av klassen ThreadManager. GameScene är delegat till ThreadManager så när servern svarar klienten så kör ThreadManager delegatmetod relevant till svaret.
     		\begin{itemize}
@@ -275,6 +277,8 @@ Dekrypterad byte =  Krypterad byte ^ K;
     		\end{itemize}
     		\subsubsection{ThreadManager <ListenerDelegate>}
     		Den klass som kontrollerar trafik med servern. Trafik ut sker via klassen Transmitter och trafik in via klassen Listener. ThreadManager är delegat till klassen Listener, tar Listener emot ett meddelande så körs delegat metoden listener:didReceiveMessage:withLength:.\\\\Denna metod identifierar meddelandet och kategoriserar det, sedan körs relevant delegatmetod. (e.g. Listener tar emot ett Change->PlayerLeft meddelande. Då körs delegatmetod: manager:playerLeft: vilket leder till att GameScene tar bort vyn som har givet id-nummer.)\\\\Skapar alla meddelande som skickas till servern. Skapade meddelanden läggs i en buffert i klassen Socket som i sin tur töms med jämna mellanrum av klassen Transmitter.
+    		
+    		\newpage
     		\subsubsection{Trådar}
     		\begin{itemize}
     			\item\textbf{Thread}\\Basklass för att underlätta trådkontroll. Har metod run som överlagras av subklasser. När man sedan kör metod: start kommer denna run metod att loopas tills dess att metod: stop körs.
@@ -283,26 +287,64 @@ Dekrypterad byte =  Krypterad byte ^ K;
     			\item\textbf{Transmitter : Thread}\\Subklass till Thread. Transmitters uppgift är att sända meddelande bufferten(ut) med ett tidsintervall. 
     		\end{itemize}
     		\subsubsection{Client: Socket}
+    		Socket klassen använder sig av berkeley socket API för att ansluta till servern via TCP. Krypterar och dekrypterar trafik när den passerar med RC4. Har fyra viktiga metoder:
+    		\begin{itemize}
+    			\item\textbf{receiveToBuffer:(char*)ofLength:(int)}\\
+    			Fyller given buffert med given längd med data från servern. Använder berkeley funktionen ::recv().
+    			
+    			\item\textbf{addMessageToBuffer:(char*)}\\Lägger till ett meddelande till en meddelandebuffert så att man kan skicka flera meddelanden i en sändning. 
+    			\item\textbf{sendBuffer}\\Krypterar och sänder instansens meddelande buffert. Berkeley funktion ::send()
+    			\item\textbf{sendMessage:(char*)withLength:(int)}\\Krypterar och sänder givet meddelande av given längd. Berkelery funktion ::send().
+    		\end{itemize}
     		
+    	\newpage
     	\subsection{Server}
+    	Serverns uppgift är att sköta kommunikation mellan klienter samt utföra spellogik och sända händelser.
+
     		\subsubsection{main.cpp}
+    		Instansierar ett GameModel objekt och en std::vector<Socket*> vilka ges till nyanslutna klienter. GameModel är den klass som sköter spellogik och håller reda på data. Vectorn används av klient trådar för att multicasta meddelanden till andra klienter.
+    		
     		\subsubsection{GameModel}
+    		GameModel håller alla positioner och tillstånd av objekt. 
+    		\begin{itemize}
+    			\item\textbf{Spelare}\\Sköter förflyttning av spelare. Förflyttningsalgoritmen finns beskriven under kapitlet Algoritmbeskrivning. Manipulering av spelare är synkroniserad för att undvika missförstånd i trafiken. Håller reda på hur många bomber spelare har, hur starka dessa är samt om man får tillstånd att placera bomber.
+    			\item\textbf{Bomber}\\Sköter explosionslogik när en bomb exploderar. 
+    		\end{itemize}
+    	
+
     		\subsubsection{Trådar}
     		\begin{itemize}
     			\item\textbf{Thread}
+    			Varje klient som ansluter till servern får en egen instans av denna klass. När ett meddelande kommer in till tråden sker följande:
+    			\begin{enumerate}
+    				\item Kontrollera att meddelandet inte är skräp.
+    				\item Identifiera meddelande typ.
+    				\item Utför instruktioner i meddelandet om dessa är godkända. (Kollision under förflyttning är ett exempel på ej godkänd instruktion.)
+    				\item Delge förändring i modellen till klienter.
+    			\end{enumerate}
     			\item\textbf{BombThread}
+    			Klassens uppgift är att uppdatera tillståndet av bomber ty de skall explodera 5 sekunder efter att de har placerats. Om en bomb eller flera har exploderat så skickar tråden ett meddelande med explosionsdata till anslutna klienter.\\\\Om en spelare dör så skickas även detta ut till klienterna. Det utförs även en koll för att se om någon har vunnit spelet, om så är fallet skickas ett meddelande återigen för att delge detta.
     		\end{itemize}
+    		
+    		\newpage
     		\subsubsection{Server: Sockets}
     		\begin{itemize}
     			\item\textbf{ServerSocket}
+    			Skapar en Socket kapabel till att lyssna efter inkomna meddelanden. Har metod accept som låser tråd som kör metoden tills dess att någon ansluter till IP-adressen och porten. När någon anslutit får man ett id nummer till den socket som öppnats. Id nummret kallas för 'socket file descriptor' och används när man skall skicka och ta emot meddelanden.
     			\item\textbf{Socket}
+    			Klass används för att skicka och ta emot meddelanden över TCP. Man måste ange en socket file descriptor i konstruktorn som sedan används i de flesta metoder för att få tillgång till rätt socket. I övrigt är denna klass liknande Socket klassen i klient delen.
     		\end{itemize}
     		
-   
-   	
-
-    \newpage
     \section{Diskussion}
+    	\subsection{SpriteKit}
+    	
+    	Klienten använder sig av apples framework SpriteKit för att rendera grafiken på skärmen. SpriteKit gjorde det enklare att utföra animationer av förflyttningar. Även explosionen som sker efter att en bomb exploderat renderas av spritekit. Då kollision och kontroll av förflyttning sker på servern så kunde jag dock inte använda SpriteKit's kollisions funktion vilket var synd. 
+    	
+
+    	
+    	
+    	
+    	\newpage
     	\subsection{Resultat}
     	
     	\begin{enumerate}
@@ -321,7 +363,10 @@ Dekrypterad byte =  Krypterad byte ^ K;
 			\item Stöd för fler spelare. Efter att (4-5) spelare har anslutit till servern så startas en ny spelplan som nya klienter kan ansluta sig till.\\\textit{\textbf{Anledning:} Applikationen körs på iOS8 och då jag endast har tillgång till en enhet (+simulator) så uteslöt jag denna punkt.}
 			\item Global toplista över alla som någonsin har spelat spelet.\\\textit{\textbf{Anledning:}Tidsbrist.}
 		\end{enumerate}
+		
+		\newpage
     	\subsection{Lösningens begränsningar}
     		\subsubsection{Klient}
+    		\subparagraph{Objective C++}
     		\subsubsection{Server}
 \end{document}
