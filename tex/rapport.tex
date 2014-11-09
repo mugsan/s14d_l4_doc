@@ -252,21 +252,35 @@ Dekrypterad byte =  Krypterad byte ^ K;
     		\subsubsection{ViewControllers}
     		\includegraphics[scale=.4]{./png/StoryBoard.png}
     		\begin{itemize}
-    			\item\textbf{NewServerViewController}
     			\item\textbf{ServerListViewController}
+    			En tableView som visar servrar som användaren kan ansluta till. Listan är en NSArray med NSDictionary's innehållande namn, adress och port till en server. Klickar man på en cell i listan så ansluter man till en server. Vill man lägga till en server till listan kan man klicka på plustecknet i det högra hörnet för att ta sig till NewServerViewController.\\\\Lägger man till en server till listan så skrivs listan till filsystemet och kommer att läsas in nästa gång man startar applikationen. Vill man rensa listan kan man trycka på knappen 'clear' som tar bort alla sparade servrar i listan samt den sparade listan i filystemet.
+    			
+    			\item\textbf{NewServerViewController}
+    			Vill man lägga till en server måste man veta IP-adress och Port-nummmer. Det data man anger valideras inte. När man angett data om server man vill lägga till trycker man på 'done' knappen och lägger på så vis till datat till föregående lista. Ångrar man sig finns en knapp 'cancel' som tar användaren tillbaka utan att lägga till något till listan.
+    			
     			\item\textbf{GameViewController}
+    			När man valt en server och tryckt på dess cell i serverlistan så hamnar man i den här viewControllern vars uppgift är att initiera den GameScene som spelet utspelar sig i. 
     		\end{itemize}
-    		\subsubsection{GameScene}
+    		
+    		\newpage
+    		\subsubsection{GameScene <ThreadManagerDelegate>}
+    		Klass vars uppgift är att kontrollera vyerna på spelplanen. Tar emot touchevents från spelaren och skickar dessa vidare till en instans av klassen ThreadManager. GameScene är delegat till ThreadManager så när servern svarar klienten så kör ThreadManager delegatmetod relevant till svaret.
     		\begin{itemize}
     			\item\textbf{GamePlayer}
-    			\item\textbf{GameFinished}
+    			En klass som ärver av SKSpriteNode. Vid instansiering skapas egentligen bara en SKSpriteNode med en bild av spelarfiguren som blandas med en given färg. Röd för spelaren och blå för motspelare. Används av GameScene för att rita ut spelarna.
+    			
+    			\item\textbf{GameFinished} 
+    			Klass som ärver av SKNode vars uppgift är att visa den title man anger i konstruktorn samt överlagra touch event för att en knapp 'disconnect' skall kunna användas för att avsluta spelet.\\\\Används av GameScene för att delge spelaren att denne har vunnit eller förlorat.
+    			
     		\end{itemize}
-    		\subsubsection{ThreadManager}
+    		\subsubsection{ThreadManager <ListenerDelegate>}
+    		Den klass som kontrollerar trafik med servern. Trafik ut sker via klassen Transmitter och trafik in via klassen Listener. ThreadManager är delegat till klassen Listener, tar Listener emot ett meddelande så körs delegat metoden listener:didReceiveMessage:withLength:.\\\\Denna metod identifierar meddelandet och kategoriserar det, sedan körs relevant delegatmetod. (e.g. Listener tar emot ett Change->PlayerLeft meddelande. Då körs delegatmetod: manager:playerLeft: vilket leder till att GameScene tar bort vyn som har givet id-nummer.)\\\\Skapar alla meddelande som skickas till servern. Skapade meddelanden läggs i en buffert i klassen Socket som i sin tur töms med jämna mellanrum av klassen Transmitter.
     		\subsubsection{Trådar}
     		\begin{itemize}
-    			\item Thread
-    			\item Listener : Thread
-    			\item Transmitter : Thread
+    			\item\textbf{Thread}\\Basklass för att underlätta trådkontroll. Har metod run som överlagras av subklasser. När man sedan kör metod: start kommer denna run metod att loopas tills dess att metod: stop körs.
+    			
+    			\item\textbf{Listener : Thread}\\Subklass till Thread. Överlagrar run() för att lyssna på inkommande trafik. Trafik tas emot med klassen Socket. 
+    			\item\textbf{Transmitter : Thread}\\Subklass till Thread. Transmitters uppgift är att sända meddelande bufferten(ut) med ett tidsintervall. 
     		\end{itemize}
     		\subsubsection{Client: Socket}
     		
