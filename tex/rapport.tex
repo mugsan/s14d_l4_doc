@@ -336,11 +336,16 @@ Dekrypterad byte =  Krypterad byte ^ K;
     		\end{itemize}
     		
     \section{Diskussion}
-    	\subsection{SpriteKit}
-    	
-    	Klienten använder sig av apples framework SpriteKit för att rendera grafiken på skärmen. SpriteKit gjorde det enklare att utföra animationer av förflyttningar. Även explosionen som sker efter att en bomb exploderat renderas av spritekit. Då kollision och kontroll av förflyttning sker på servern så kunde jag dock inte använda SpriteKit's kollisions funktion vilket var synd. 
-    	
-
+		\subsection{Utförande}
+		
+		Projektet har gått bra men det har tagit lång tid att utföra.
+		\begin{itemize}
+			\item\textbf{Objective C++}\\\\Man kan säga att klienten består av 2 delar: Användargränssnitt och Kontroll. I början av projektet skrev jag dessa var för sig och de fungerade utan problem. Problem uppstod däremot när de skulle bindas samman.\\\\Kontroll var skriven i C++ och Användargränssnittet i Objective-C så Objective C++ var tvunget att användas där de skulle mötas. Det är inga problem att använda sig av medlemmar skrivna i C++ i klasser skrivna i Objective-C. Problemet är när man måste ha en referens till en Objective-C klass i en C++ klass. Jag löste problemet genom att skriva om alla C++ klasser till Objective-C klasser.
+			
+			\item\textbf{SpriteKit}\\\\Jag ville testa SpriteKit då jag från mina klasskamrater fick höra hur fantastikt det var. Dock fick jag direkt bemöta vissa problem. Mina trådar var ursprungligen byggda med POSIX threads API vilket visade sig fungera så länge man bara hade en tråd, men om man körde fler POSIX trådar så kraschade programmet. Jag bytte API till NSThread vilket är att rekommendera. En annan fördel med SpriteKit är att man inte behöver kalla på main-thread när man skall utföra animationer eller lägga till noder till GameScene.\\\\Blev glatt överraskad över hur bra SpriteKit var. Finns väldigt många fördelar med att använda sig av SpriteKit så som: Kollision, Optimerad rendering och Enkel struktur av vyer.
+			
+			\item\textbf{Nätverksprogrammering}\\\\Jag trodde att jag skulle spara tid genom att bygga mitt projekt på mitt redan existerande projekt från D0036D. Det hände flera gånger att jag hade fått klient och server att fungera med en klient för att sedan testa logga in med två klienter och upptäcka att servern eller klient kraschar. 
+		\end{itemize}
     	
     	
     	
@@ -367,6 +372,14 @@ Dekrypterad byte =  Krypterad byte ^ K;
 		\newpage
     	\subsection{Lösningens begränsningar}
     		\subsubsection{Klient}
-    		\subparagraph{Objective C++}
-    		\subsubsection{Server}
+    			\begin{itemize}
+    				\item\textbf{Client-side prediction}\\Spelet känns ibland lite segt när man spelar det, speciellt när man ansluter med en telefon. Detta beror till stor del på att förflyttning av spelare inte sker förrän servern ger svar på förflyttningsförfrågan, men även på hur implementation av sändning av meddelanden.\\\\Meddelanden skickas från klienten i intervall om 0.264s vilket innebär att om man har otur kan få uppleva en viss fördröjning oberoende av latency.
+  					
+    			\end{itemize}
+    		\subsection{Server}
+    			\begin{itemize}
+    				\item\textbf{Minnesläckor}\\Jag har prioriterat minnesläckor på grund av begränsad tid. Servern verkar dock ganska stabil då jag har testat den. 
+    				\item\textbf{Struktur}\\Om jag skulle skriva om servern idag så skulle jag vilja lägga till en statemachine som håller reda på gamestate. Detta skulle förenkla utbyggnad av spelet i fall man skulle vilja lägga till ytterligare funktionalitet. 
+    			\end{itemize}
+    		
 \end{document}
