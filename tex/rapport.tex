@@ -91,6 +91,7 @@
 		
 		
     \section{Användarhandledning}
+    \href{https://www.youtube.com/watch?v=ExhOKXWXvTQ}{\color{blue}Länk till videopresentation.}
     	\subsection{Klient}
     		När applikationen startar möts användaren av en lista över servrar. I listans högra hörn så finns en knapp som leder till en vy där man kan lägga till fler servrar till listan. För att lägga till en server till listan måste man veta IP-adress till en server samt vilken port server lyssnar på (standardport är: 12345). För att ansluta till en server klickar man på en cell i listan.\\\\När en spelare anländer till spelplanen har denne två val:
     		\begin{itemize}
@@ -376,9 +377,9 @@ Dekrypterad byte =  Krypterad byte ^ K;
     				\item\textbf{Client-side prediction}\\Spelet känns ibland lite segt när man spelar det, speciellt när man ansluter med en telefon. Detta beror till stor del på att förflyttning av spelare inte sker förrän servern ger svar på förflyttningsförfrågan, men även på hur implementation av sändning av meddelanden.\\\\Meddelanden skickas från klienten i intervall om 0.264s vilket innebär att om man har otur kan få uppleva en viss fördröjning oberoende av latency.
   					
     			\end{itemize}
-    		\subsection{Server}
+    		\subsubsection{Server}
     			\begin{itemize}
-    				\item\textbf{Minnesläckor}\\Jag har prioriterat minnesläckor på grund av begränsad tid. Servern verkar dock ganska stabil då jag har testat den. 
+    				\item\textbf{Minnesläckor}\\Jag har inte prioriterat minnesläckor på grund av begränsad tid. Servern verkar dock ganska stabil då jag har testat den. 
     				\item\textbf{Struktur}\\Om jag skulle skriva om servern idag så skulle jag vilja lägga till en statemachine som håller reda på gamestate. Detta skulle förenkla utbyggnad av spelet i fall man skulle vilja lägga till ytterligare funktionalitet. 
     			\end{itemize}
     		
